@@ -10,7 +10,7 @@ import applicationRout from "./routes/application.route.js";
 
 dotenv.config({});
 const app = express();
-const PORT = process.env.POrt || 3000;
+const PORT = process.env.PORT || 3000;
 
 //Middleware
 
@@ -19,9 +19,10 @@ app.use(express.urlencoded({ extended: "true" }));
 app.use(cookieParser());
 
 const corsOptions = {
-  origin: "http://localhost:5173",
+  origin: "https://job-portal-wy2g.vercel.app",
   credentials: true,
 };
+
 app.use(cors(corsOptions));
 
 //api's
