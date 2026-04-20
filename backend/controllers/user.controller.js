@@ -15,9 +15,12 @@ export const register = async (req, res) => {
       });
     }
     //cloudinary
+    let cloudResponse;
     const file = req.file;
-    const fileUri = getDataUri(file);
-    const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
+    if (file) {
+      const fileUri = getDataUri(file);
+      cloudResponse = await cloudinary.uploader.upload(fileUri.content);
+    }
 
     // checking the user already exits or not
     const user = await User.findOne({ email });
@@ -39,7 +42,7 @@ export const register = async (req, res) => {
       password: hashedPassword,
       role,
       profile: {
-        profilePhoto: cloudResponse.secure_url,
+        profilePhoto: cloudResponse?.secure_url || "",
       },
     });
 
@@ -116,7 +119,8 @@ export const login = async (req, res) => {
       .cookie("token", token, {
         maxAge: 1 * 24 * 60 * 60 * 1000,
         httpOnly: true,
-        sameSite: "strict",
+        sameSite: "none",
+        secure: true,
       })
       .json({
         message: `Welcome back ${user.fullname}`,
@@ -149,12 +153,17 @@ export const updateProfile = async (req, res) => {
     const file = req.file;
 
     // cloudinary ayega idhar
-    const fileUri = getDataUri(file);
-    const cloudResponse = await cloudinary.uploader.upload(fileUri.content, {
-      resource_type: "raw",
-      use_filename: true,
-      unique_filename: false,
-    });
+    const file = req.file;
+
+    let cloudResponse;
+    if (file) {
+      const fileUri = getDataUri(file);
+      cloudResponse = await cloudinary.uploader.upload(fileUri.content, {
+        resource_type: "raw",
+        use_filename: true,
+        unique_filename: false,
+      });
+    }
 
     //skill ek  string format m ayega usko array m convet krna h
     let skillsArray;
