@@ -153,7 +153,7 @@ export const updateProfile = async (req, res) => {
     const file = req.file;
 
     // cloudinary ayega idhar
-    const file = req.file;
+    
 
     let cloudResponse;
     if (file) {
